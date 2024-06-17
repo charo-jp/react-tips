@@ -1,18 +1,21 @@
-// Polymorphic Component
+// Polymorphic Component with Generics
 // When do you use it?
-import { ElementType } from "react";
+import { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 
-type ContainerProps = {
-  as: ElementType // e.g) Button
-}
+// T must be ElementType.
+type ContainerProps<T extends ElementType> = {
+  as?: T; // e.g) Button
+  children: ReactNode;
+} & ComponentPropsWithoutRef<T>;
 
-const Container = ({as}: ContainerProps) => {
-  const Component = as;
-
-  return (
-    <Component />
-  )
-}
-
+const Container = <C extends ElementType>({
+  as,
+  children,
+  ...props
+}: ContainerProps<C>) => {
+  const Component = as || "div";
+  // The frequent usecase of polymorphic component is for stlying.
+  return <Component {...props}>{children}</Component>;
+};
 
 export default Container;
