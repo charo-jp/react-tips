@@ -1,9 +1,26 @@
-import { type ComponentPropsWithoutRef, type FormEvent } from "react";
+import { type ComponentPropsWithoutRef, type FormEvent, useRef, forwardRef, useImperativeHandle } from "react";
+
 type FormProps = ComponentPropsWithoutRef<"form"> & {
   onSave: (value: unknown) => void;
 };
 
-const Form = ({ onSave, children, ...otherProps }: FormProps) => {
+export type FormHandle = {
+  clear: () => void;
+}
+
+const Form = forwardRef<FormHandle, FormProps>(({ onSave, children, ...otherProps }, ref) => {
+
+  const form = useRef<HTMLFormElement>(null);
+
+  // used to enable api calling from outside of this components!
+  useImperativeHandle(ref, () => {
+    return {
+      clear() {
+        form.current?.reset();
+      }
+    }
+  });
+
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
@@ -12,10 +29,11 @@ const Form = ({ onSave, children, ...otherProps }: FormProps) => {
     onSave(data);
   };
   return (
-    <form onSubmit={handleSubmit} {...otherProps}>
+    <form onSubmit={handleSubmit} {...otherProps} ref = {form}>
       {children}
     </form>
   );
-};
+});
+
 
 export default Form;
