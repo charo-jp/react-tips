@@ -65,7 +65,7 @@ function timersReducer(state: TimersState, action: Action): TimersState {
   if (action.type === "STOP_TIMERS") {
     return {
       ...state,
-      isRunning: true,
+      isRunning: false,
     };
   }
   if (action.type === "ADD_TIMER") {

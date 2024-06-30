@@ -10,7 +10,7 @@ const Card = ({ children, title, actions }: CardProps) => {
   return (
     <div>
       <h2>title</h2>
-      {children}
+      {children }
       {actions}
     </div>
   );
